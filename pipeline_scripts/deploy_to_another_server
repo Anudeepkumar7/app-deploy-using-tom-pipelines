@@ -1,0 +1,35 @@
+# 1. install tomcat in that server and move that apache to /opt 
+# 2. setup the username and password and start the apache server and try to acess it using th ip and port number
+# 3. build the application in jenins erver itself
+# 4. and for copying the war file to tomcat server, install ssh agent plugin and generate pipeline script ui=sing the generator and add that like below
+
+
+
+
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('code') {
+            steps {
+                git 'https://github.com/Anudeepkumar7/one.git'
+            }
+        }
+        stage ('build')
+        {
+            steps{
+                sh 'mvn clean package'
+            }
+        }
+        stage ("copy file to another server"){
+            steps{
+               sshagent(['ec344da6-1cc6-4d0c-84b5-9cdd09d435dc']) {
+               sh 'scp -o StrictHostKeyChecking=no target/*.war ec2-user@13.233.184.138:/opt/apache-tomcat-9.0.74/webapps'
+            }
+        }
+        }
+    }
+}

@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('code') {
+            steps {
+                git 'https://github.com/Anudeepkumar7/one.git'
+            }
+        }
+        stage ('build')
+        {
+            steps{
+                sh 'mvn clean package'
+            }
+        }
+        stage ('cp the build file to tomcat')
+        {
+            steps{
+                sh 'cp target/*.war /opt/apache-tomcat-9.0.74/webapps/'
+            }
+        }
+        stage ('restart tomcat')
+        {
+            steps {
+                sh 'cd /opt/apache-tomcat-9.0.74/bin/'
+                sh 'sh /opt/apache-tomcat-9.0.74/bin/startup.sh'
+            }
+        }
+    }
+}
